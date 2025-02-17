@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">GasPriceDropNotifier</string>
+    <string-array name="fuel_types">
+        <item>Regular</item>
+        <item>Midgrade</item>
+        <item>Premium</item>
+        <item>Diesel</item>
+        <item>E85</item>
+        <item>UNL88</item>
+    </string-array>
+</resources>
