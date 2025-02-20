@@ -1,21 +1,23 @@
-// File: <root>/build.gradle.kts
+// Top-level build file
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:8.8.1")
+        classpath("com.google.dagger:hilt-android-gradle-plugin:2.50")
+        classpath("com.google.gms:google-services:4.4.1")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.24")
+    }
+}
 
 plugins {
-    // Typically left empty at the root if you're using the modern plugins DSL
-    // in your module-level build.gradle.kts
+    id("com.android.application") version "8.8.1" apply false
+    id("com.android.library") version "8.8.1" apply false
+    id("org.jetbrains.kotlin.android") version "1.9.23" apply false
 }
 
-buildscript {
-    // Generally no dependencies needed here if you're declaring
-    // plugin versions in the module-level plugins { } block
-    dependencies {
-        // e.g., if you needed a legacy plugin classpath:
-        // classpath("com.android.tools.build:gradle:<version>")
-    }
-}
-
-allprojects {
-    // Provide common repositories for all subprojects if needed
-    repositories {
-    }
+tasks.register("clean", Delete::class) {
+    delete(rootProject.layout.buildDirectory) // Updated deprecated API
 }

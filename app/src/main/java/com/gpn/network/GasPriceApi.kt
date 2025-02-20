@@ -1,9 +1,9 @@
 package com.gpn.network
 
-import com.gpn.data.GasStation
-import retrofit2.Call
+import BrandResponse
+import GasStation
 import retrofit2.http.GET
-import retrofit2.http.Header
+import retrofit2.http.Query
 
 data class FindByCityOrZipcodeResponse(
     val data: DataNode?
@@ -23,10 +23,13 @@ data class Stations(
 
 interface GasPriceApi {
     @GET("findByCityOrZipcode")
-    fun findByCityOrZipcode(
-        @Header("search") search: String,
-        @Header("fuel") fuel: Int,
-        @Header("maxAge") maxAge: Int,
-        @Header("brandId") brandId: String = ""
-    ): Call<FindByCityOrZipcodeResponse>
+    suspend fun findByCityOrZipcode(
+        @Query("search") search: String,
+        @Query("fuel") fuel: Int,
+        @Query("maxAge") maxAge: Int,
+        @Query("brandId") brandId: String = ""
+    ): FindByCityOrZipcodeResponse
+
+    @GET("getBrands")
+    suspend fun getBrands(): BrandResponse
 }

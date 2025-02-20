@@ -1,20 +1,20 @@
 plugins {
-    // Modern plugin versions
-    id("com.android.application") version "8.0.2"
-    id("org.jetbrains.kotlin.android") version "1.8.21"
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("com.google.dagger.hilt.android")
+    id("kotlin-kapt")
 }
 
 android {
     namespace = "com.gpn"
-    compileSdk = 33 // Preview SDK; ensure you've installed "Android API 35 (Preview)" in SDK Manager
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.gpn"
         minSdk = 28
-        targetSdk = 33 // Also a preview
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -28,60 +28,62 @@ android {
         }
     }
 
-    // Enable Compose
     buildFeatures {
         compose = true
     }
 
-    // Use a modern Compose Compiler extension that works with Kotlin 1.8.x
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.7"
-        // Remove kotlinCompilerVersion; it's no longer needed
+        kotlinCompilerExtensionVersion = "1.5.14"  // ✅ Updated to latest
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 }
 
 dependencies {
+    // ✅ Only keep ONE JSON converter (Choose Moshi OR Gson)
+    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
+    implementation("com.squareup.moshi:moshi-kotlin:1.15.0")
 
-    implementation("androidx.compose.material3:material3:1.0.0") // Update to latest stable version
+    // ✅ Updated Lifecycle dependencies
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
 
-    // Use the Compose BOM to keep versions in sync
-    implementation(platform("androidx.compose:compose-bom:2023.05.01"))
+    // ✅ Hilt Dependency Injection (Latest)
+    implementation("com.google.dagger:hilt-android:2.51")
+    kapt("com.google.dagger:hilt-android-compiler:2.51")
+
+    // ✅ Jetpack Compose BOM (Automatically gets latest Compose versions)
+    implementation(platform("androidx.compose:compose-bom:2024.03.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.ui:ui-tooling-preview")
     debugImplementation("androidx.compose.ui:ui-tooling")
+    implementation("androidx.compose.material:material-icons-extended:1.6.0")
 
-    // Core
-    implementation("androidx.core:core-ktx:1.10.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
-    implementation("androidx.activity:activity-compose:1.7.2")
+    // ✅ Core Libraries
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.activity:activity-compose:1.9.0")  // ✅ Updated
 
-    // Retrofit for Network calls
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    // ✅ Network (Retrofit + OkHttp)
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")  // ✅ Updated
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")  // ✅ Latest OkHttp
 
-    // (Optional) Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
+    // ✅ Coroutines (Updated)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
 
-    // Lifecycle ViewModel for Compose
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
-
-    // Testing
-    testImplementation("junit:junit:4.13.2")
+    // ✅ Testing
+    testImplementation("junit:junit:4.14.0")  // ✅ Updated
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-
-    // Compose Testing
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.05.01"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2024.03.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
