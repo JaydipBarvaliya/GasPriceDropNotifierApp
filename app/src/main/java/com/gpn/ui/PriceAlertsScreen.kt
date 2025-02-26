@@ -37,8 +37,9 @@ import com.gpn.viewmodel.PriceAlertsViewModel
 
 @Composable
 fun PriceAlertsScreen(viewModel: PriceAlertsViewModel) {
-    val alerts by viewModel.alerts.collectAsState()
+
     var showDeleteAllDialog by remember { mutableStateOf(false) }
+    val alerts by viewModel.alerts.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.fetchAlerts()
@@ -83,21 +84,24 @@ fun PriceAlertsScreen(viewModel: PriceAlertsViewModel) {
                     )
                 }
             } else {
-                LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                LazyColumn( modifier = Modifier.weight(1f),
+                     verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     items(alerts) { alert ->
                         AlertItem(viewModel, alert)
                     }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                if (alerts.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                // 🚨 Delete All Alerts Button
-                Button(
-                    onClick = { showDeleteAllDialog = true },
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Delete All Alerts")
+                    // 🚨 Delete All Alerts Button
+                    Button(
+                        onClick = { showDeleteAllDialog = true },
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Delete All Alerts")
+                    }
                 }
             }
         }

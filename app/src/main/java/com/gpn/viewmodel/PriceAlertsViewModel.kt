@@ -12,21 +12,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class PriceAlertsViewModel @Inject constructor(
-    private val gasPriceApi: GasPriceApi
-) : ViewModel() {
+class PriceAlertsViewModel @Inject constructor( private val gasPriceApi: GasPriceApi ) : ViewModel() {
 
     private val _alerts = MutableStateFlow<List<Alert>>(emptyList())
     val alerts: StateFlow<List<Alert>> = _alerts
 
-    private val _updateStatus = MutableStateFlow<Boolean?>(null)
-    val updateStatus: StateFlow<Boolean?> = _updateStatus
-
     private val _deleteStatus = MutableStateFlow<Boolean?>(null)
-    val deleteStatus: StateFlow<Boolean?> = _deleteStatus
 
-    private val _deleteAllStatus = MutableStateFlow<Boolean?>(null)
-    val deleteAllStatus: StateFlow<Boolean?> = _deleteAllStatus
 
     fun fetchAlerts() {
         viewModelScope.launch {
@@ -43,6 +35,7 @@ class PriceAlertsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val response = gasPriceApi.updateAlert(updatedAlert) // API Call
+
                 if (response.isSuccessful) { // Ensure success response
                     response.body()?.let { updatedAlerts ->
                         _alerts.value = updatedAlerts // Update UI with new alerts list
