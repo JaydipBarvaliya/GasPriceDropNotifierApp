@@ -8,13 +8,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
-import androidx.compose.material.icons.filled.DirectionsCar
-import androidx.compose.material.icons.filled.FlashOn
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.filled.LocalGasStation
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Store
+import androidx.compose.material.icons.outlined.AirportShuttle
+import androidx.compose.material.icons.outlined.Bolt
+import androidx.compose.material.icons.outlined.Eco
+import androidx.compose.material.icons.outlined.LocalGasStation
+import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material.icons.outlined.Whatshot
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,6 +35,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gpn.viewmodel.GasPriceViewModel
@@ -97,7 +101,7 @@ fun SearchScreen(viewModel: GasPriceViewModel) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FuelTypeDropdownMenu( selectedFuelType: String, onFuelTypeSelected: (String) -> Unit) {
+fun FuelTypeDropdownMenu(selectedFuelType: String, onFuelTypeSelected: (String) -> Unit) {
     val fuelTypes = listOf("Regular", "Midgrade", "Premium", "Diesel", "E85", "UNL88")
     var expanded by remember { mutableStateOf(false) }
 
@@ -111,7 +115,12 @@ fun FuelTypeDropdownMenu( selectedFuelType: String, onFuelTypeSelected: (String)
             readOnly = true,
             label = { Text("Fuel Type") },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            leadingIcon = { Icon(Icons.Default.LocalGasStation, contentDescription = null) },
+            leadingIcon = {
+                Icon(
+                    imageVector = getFuelTypeIcon(selectedFuelType),
+                    contentDescription = null
+                )
+            },
             modifier = Modifier
                 .menuAnchor()
                 .fillMaxWidth(),
@@ -141,10 +150,7 @@ fun FuelTypeDropdownMenu( selectedFuelType: String, onFuelTypeSelected: (String)
                     },
                     leadingIcon = {
                         Icon(
-                            imageVector = when(fuelType) {
-                                "Diesel" -> Icons.Default.DirectionsCar
-                                else -> Icons.Default.FlashOn
-                            },
+                            imageVector = getFuelTypeIcon(fuelType),
                             contentDescription = null
                         )
                     }
@@ -153,6 +159,26 @@ fun FuelTypeDropdownMenu( selectedFuelType: String, onFuelTypeSelected: (String)
         }
     }
 }
+
+/**
+ * Returns the appropriate icon for the given fuel type.
+ */
+@Composable
+fun getFuelTypeIcon(fuelType: String): ImageVector {
+    return when (fuelType) {
+        "Regular" -> Icons.Outlined.LocalGasStation   // ⛽ Gas Pump
+        "Midgrade" -> Icons.Outlined.Whatshot        // 🔥 Fire/heat for midgrade
+        "Premium" -> Icons.Outlined.Star            // ⭐ Star for premium
+        "Diesel" -> Icons.Outlined.AirportShuttle   // 🚛 Truck icon for diesel
+        "E85" -> Icons.Outlined.Eco                 // 🌱 Leaf icon for ethanol
+        "UNL88" -> Icons.Outlined.Bolt              // ⚡ Lightning bolt for high-octane
+        else -> Icons.Outlined.LocalGasStation      // Default: Regular Gas Pump
+    }
+}
+
+
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
