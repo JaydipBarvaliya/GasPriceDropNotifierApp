@@ -21,6 +21,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.gpn.network.Alert
@@ -46,7 +49,9 @@ fun PriceAlertsScreen(viewModel: PriceAlertsViewModel) {
             } else {
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     items(alerts) { alert ->
-                        AlertItem(alert)
+                        AlertItem(viewModel, alert) { updatedAlert ->
+                            viewModel.updateAlert(updatedAlert)
+                        }
                     }
                 }
             }
@@ -54,62 +59,56 @@ fun PriceAlertsScreen(viewModel: PriceAlertsViewModel) {
     }
 }
 
+
 @Composable
-fun AlertItem(alert: Alert) {
+fun AlertItem(viewModel: PriceAlertsViewModel, alert: Alert, onUpdateAlert: (Alert) -> Unit) {
+    var showDialog by remember { mutableStateOf(false) }
+
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            // Station Name
-            Text(
-                text = alert.name ?: "...",
-                style = MaterialTheme.typography.titleLarge
-            )
-
-            // Address
-            Text(
-                text = alert.formattedAddress().ifEmpty { "..." },
-                style = MaterialTheme.typography.bodyMedium
-            )
-
+            Text(text = alert.name ?: "...", style = MaterialTheme.typography.titleLarge)
+            Text(text = alert.formattedAddress().ifEmpty { "..." }, style = MaterialTheme.typography.bodyMedium)
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Expected Price
             Text(
                 text = "Price Drop Below: ${alert.expectedPrice}",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.primary
             )
 
-            // Fuel Type
             Text(
-                text = "Fuel Type: Regular", // Assuming 1 = Regular (Modify as per API mapping)
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface
+                text = "Fuel Type: ${alert.fuelType}",
+                style = MaterialTheme.typography.bodyMedium
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Action Buttons
-            Row(
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Button(onClick = { /* Handle modify action */ }) {
+            Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
+                Button(onClick = { showDialog = true }) {
                     Text("Modify Alert")
                 }
 
-                Button(
-                    onClick = { /* Handle delete action */ },
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
-                ) {
+                Button(onClick = {
+                    viewModel.deleteAlert(alert.id)
+                },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)) {
                     Text("Delete Alert")
                 }
             }
         }
+    }
+
+    if (showDialog) {
+        ModifyAlertDialog(
+            alert = alert,
+            onDismiss = { showDialog = false },
+            onUpdate = { updatedAlert ->
+                onUpdateAlert(updatedAlert)
+                showDialog = false
+            }
+        )
     }
 }

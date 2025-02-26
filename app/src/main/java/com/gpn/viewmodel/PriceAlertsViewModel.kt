@@ -1,5 +1,6 @@
 package com.gpn.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gpn.network.Alert
@@ -30,43 +31,74 @@ class PriceAlertsViewModel @Inject constructor(
     fun fetchAlerts() {
         viewModelScope.launch {
             try {
-                _alerts.value = gasPriceApi.getAlerts()
+                val alertList = gasPriceApi.getAlerts()
+                _alerts.value = alertList
             } catch (e: Exception) {
-                // Handle error
+                Log.e("FetchAlerts", "Error fetching alerts", e)
             }
         }
     }
 
-    fun updateAlert(alert: Alert) {
+    fun updateAlert(updatedAlert: Alert) {
         viewModelScope.launch {
             try {
-                val response = gasPriceApi.updateAlert(alert)
-                _updateStatus.value = response.isSuccessful
+                val response = gasPriceApi.updateAlert(updatedAlert) // API Call
+                if (response.isSuccessful) { // Ensure success response
+                    response.body()?.let { updatedAlerts ->
+                        _alerts.value = updatedAlerts // Update UI with new alerts list
+                    }
+                } else {
+                    // Handle API failure (e.g., log or show error message)
+                    Log.e("UpdateAlert", "Failed to update alert: ${response.errorBody()?.string()}")
+                }
             } catch (e: Exception) {
-                _updateStatus.value = false
+                Log.e("UpdateAlert", "Error updating alert", e)
             }
         }
     }
+
 
     fun deleteAlert(id: Long) {
         viewModelScope.launch {
             try {
                 val response = gasPriceApi.deleteAlert(id)
-                _deleteStatus.value = response.isSuccessful
+                if (response.isSuccessful) {
+                    response.body()?.let { updatedAlerts ->
+                        _alerts.value = updatedAlerts // Update UI with new list
+                        _deleteStatus.value = true
+                    } ?: run {
+                        Log.e("DeleteAlert", "Empty response body")
+                        _deleteStatus.value = false
+                    }
+                } else {
+                    Log.e("DeleteAlert", "Failed to delete alert: ${response.errorBody()?.string()}")
+                    _deleteStatus.value = false
+                }
             } catch (e: Exception) {
+                Log.e("DeleteAlert", "Error deleting alert", e)
                 _deleteStatus.value = false
             }
         }
     }
 
+
     fun deleteAllAlerts() {
         viewModelScope.launch {
             try {
                 val response = gasPriceApi.deleteAllAlerts()
-                _deleteAllStatus.value = response.isSuccessful
+
+                if (response.isSuccessful) {
+                    _deleteAllStatus.value = true // Success
+                } else {
+                    Log.e("DeleteAllAlerts", "Failed to delete alerts: ${response.errorBody()?.string()}")
+                    _deleteAllStatus.value = false // Failure
+                }
             } catch (e: Exception) {
+                Log.e("DeleteAllAlerts", "Error deleting all alerts", e)
                 _deleteAllStatus.value = false
             }
         }
     }
+
+
 }

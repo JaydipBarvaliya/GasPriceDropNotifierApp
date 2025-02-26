@@ -45,7 +45,7 @@ data class PriceAlertResponse(
 )
 
 data class Alert(
-    val id: Int,
+    val id: Long,
     val stationId: Int,
     val fuelType: Int,
     val expectedPrice: Double,
@@ -77,16 +77,16 @@ interface GasPriceApi {
     @POST("createAlert")
     suspend fun createPriceAlert(@Body request: PriceAlertRequest): PriceAlertResponse
 
-    @PUT("/updateAlert")
-    suspend fun updateAlert(@Body alert: Alert): Response<Alert>
-
-    @DELETE("/deleteAlert/{id}")
-    suspend fun deleteAlert(@Path("id") id: Long): Response<String>
-
-    @DELETE("/deleteAllAlerts")
-    suspend fun deleteAllAlerts(): Response<String>
+    @PUT("updateAlert")
+    suspend fun updateAlert(@Body alert: Alert): Response<List<Alert>>
 
     @GET("/getAlerts")
     suspend fun getAlerts(): List<Alert>
+
+    @DELETE("deleteAlert/{id}")
+    suspend fun deleteAlert(@Path("id") alertId: Long): Response<List<Alert>>
+
+    @DELETE("/deleteAllAlerts")
+    suspend fun deleteAllAlerts(): Response<String>
 
 }

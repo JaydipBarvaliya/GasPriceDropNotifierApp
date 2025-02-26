@@ -66,8 +66,7 @@ class GasPriceViewModel @Inject constructor(private val gasPriceApi: GasPriceApi
     val errorState: StateFlow<String?> = _errorState.asStateFlow()
 
     private val fuelTypeMap = mapOf(
-        "Regular" to 1, "Midgrade" to 2, "Premium" to 3,
-        "Diesel" to 4, "E85" to 5, "UNL88" to 12
+        "Regular" to 1, "Midgrade" to 2, "Premium" to 3, "Diesel" to 4, "E85" to 5, "UNL88" to 12
     )
 
     fun getFuelTypeId(fuelTypeName: String): Int {

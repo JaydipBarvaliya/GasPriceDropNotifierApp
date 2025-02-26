@@ -202,7 +202,7 @@ fun CreateAlertDialog(viewModel: GasPriceViewModel, snackbarHostState: SnackbarH
                 ) {
                     // Fuel Type Dropdown
                     var expanded by remember { mutableStateOf(false) }
-                    val fuelTypes = listOf("Regular", "Midgrade", "Premium", "Diesel")
+                    val fuelTypes = listOf("Regular", "Midgrade", "Premium", "Diesel", "E85", "UNL88")
 
                     ExposedDropdownMenuBox(
                         expanded = expanded,
