@@ -1,37 +1,30 @@
 package com.gpn
 
-import GasPriceViewModel
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.gpn.ui.SearchScreen
-import com.gpn.ui.StationListScreen
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.gpn.navigation.NavGraph
+import com.gpn.viewmodel.GasPriceViewModel
+import com.gpn.viewmodel.PriceAlertsViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MaterialTheme {
-                val gasPriceViewModel: GasPriceViewModel = viewModel()
+                val gasPriceViewModel: GasPriceViewModel =
+                    hiltViewModel() // ✅ Added missing ViewModel
+                val gasAlertsViewModel: PriceAlertsViewModel = hiltViewModel()
 
-                Column {
-                    SearchScreen(gasPriceViewModel)
-                    StationListScreen(gasPriceViewModel)
-                }
+                NavGraph(
+                    gasPriceViewModel = gasPriceViewModel, // ✅ Passed to NavGraph
+                    alertsModel = gasAlertsViewModel
+                )
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    MaterialTheme {
-        // If you want to preview the entire screen, call SearchScreen() here
     }
 }

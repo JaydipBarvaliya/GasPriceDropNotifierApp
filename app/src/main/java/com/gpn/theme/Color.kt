@@ -1,4 +1,4 @@
-package com.gpn.ui.theme
+package com.gpn.theme
 
 import androidx.compose.ui.graphics.Color
 
