@@ -25,12 +25,14 @@ import com.gpn.network.Alert
 fun ModifyAlertDialog(
     alert: Alert,
     onDismiss: () -> Unit,
-    onUpdate: (Alert) -> Unit
+    onUpdate: (Alert) -> Unit,
+    onDelete: (Alert) -> Unit // Added delete callback
 ) {
     var expectedPrice by remember { mutableStateOf(alert.expectedPrice.toString()) }
     val fuelTypes = listOf("Regular", "Midgrade", "Premium", "Diesel", "E85", "UNL88")
     var fuelTypeIndex by remember { mutableIntStateOf(alert.fuelType) }
     var expanded by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) } // Track delete confirmation
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -77,15 +79,21 @@ fun ModifyAlertDialog(
             }
         },
         confirmButton = {
-            Button(onClick = {
-                onUpdate(
-                    alert.copy(
-                        expectedPrice = expectedPrice.toDouble(),
-                        fuelType = fuelTypeIndex
+            Column {
+                Button(onClick = {
+                    onUpdate(
+                        alert.copy(
+                            expectedPrice = expectedPrice.toDouble(),
+                            fuelType = fuelTypeIndex
+                        )
                     )
-                )
-            }) {
-                Text("Update Alert")
+                }) {
+                    Text("Update Alert")
+                }
+
+                Button(onClick = { showDeleteDialog = true }) {
+                    Text("Delete Alert")
+                }
             }
         },
         dismissButton = {
@@ -94,4 +102,27 @@ fun ModifyAlertDialog(
             }
         }
     )
+
+    // Show confirmation dialog before deleting
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Confirm Delete") },
+            text = { Text("Are you sure you want to delete this alert?") },
+            confirmButton = {
+                Button(onClick = {
+                    onDelete(alert)
+                    showDeleteDialog = false // Close confirmation dialog
+                    onDismiss() // Close ModifyAlertDialog
+                }) {
+                    Text("Yes, Delete")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showDeleteDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
 }

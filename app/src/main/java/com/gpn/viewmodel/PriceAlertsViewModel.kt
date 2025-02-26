@@ -88,17 +88,15 @@ class PriceAlertsViewModel @Inject constructor(
                 val response = gasPriceApi.deleteAllAlerts()
 
                 if (response.isSuccessful) {
-                    _deleteAllStatus.value = true // Success
+                    _alerts.value = emptyList() // Clear UI after deletion
+                    Log.d("DeleteAllAlerts", "All alerts deleted successfully")
                 } else {
-                    Log.e("DeleteAllAlerts", "Failed to delete alerts: ${response.errorBody()?.string()}")
-                    _deleteAllStatus.value = false // Failure
+                    Log.e("DeleteAllAlerts", "Failed to delete all alerts: ${response.errorBody()?.string()}")
                 }
             } catch (e: Exception) {
                 Log.e("DeleteAllAlerts", "Error deleting all alerts", e)
-                _deleteAllStatus.value = false
             }
         }
     }
-
 
 }

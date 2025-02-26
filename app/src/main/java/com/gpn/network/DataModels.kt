@@ -2,6 +2,7 @@ package com.gpn.network
 
 import GasStation
 import com.gpn.viewmodel.BrandResponse
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -87,6 +88,6 @@ interface GasPriceApi {
     suspend fun deleteAlert(@Path("id") alertId: Long): Response<List<Alert>>
 
     @DELETE("/deleteAllAlerts")
-    suspend fun deleteAllAlerts(): Response<String>
+    suspend fun deleteAllAlerts(): Response<ResponseBody>
 
 }
