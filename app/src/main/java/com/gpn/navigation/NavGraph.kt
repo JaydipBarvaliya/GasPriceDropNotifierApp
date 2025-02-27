@@ -1,80 +1,71 @@
 package com.gpn.navigation
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.DrawerState
-import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.ModalDrawerSheet
-import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.gpn.ui.PriceAlertsScreen
 import com.gpn.ui.StationListScreen
 import com.gpn.viewmodel.GasPriceViewModel
 import com.gpn.viewmodel.PriceAlertsViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @Composable
 fun NavGraph(gasPriceViewModel: GasPriceViewModel, alertsModel: PriceAlertsViewModel) {
     val navController = rememberNavController()
-    val drawerState = rememberDrawerState(DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
 
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            DrawerContent(navController, drawerState, scope)
-        }
-    ) {
-        NavHost(navController = navController, startDestination = "search") {
-            composable("search") { SearchScreen(gasPriceViewModel) } // ✅ Pass ViewModel here
+    Scaffold(
+        bottomBar = { BottomNavBar(navController) } // 🚀 Added BottomNavBar here!
+    ) { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = "search",
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            composable("search") { StationListScreen(viewModel = gasPriceViewModel) } // ✅ Updated Navigation
             composable("alerts") { PriceAlertsScreen(alertsModel) }
         }
     }
 }
 
 @Composable
-fun DrawerContent(navController: NavController, drawerState: DrawerState, scope: CoroutineScope) {
-    ModalDrawerSheet {
-        Text("Menu", modifier = Modifier.padding(16.dp))
-        HorizontalDivider()
-        NavigationDrawerItem(
-            label = { Text("Find Gas Stations") },
-            selected = false,
-            onClick = {
-                scope.launch { drawerState.close() }
-                navController.navigate("search")
-            }
-        )
-        NavigationDrawerItem(
-            label = { Text("Alerts") },
-            selected = false,
-            onClick = {
-                scope.launch { drawerState.close() }
-                navController.navigate("alerts")
-            }
-        )
-    }
-}
+fun BottomNavBar(navController: NavController) {
+    val items = listOf(
+        BottomNavItem("search", "Find Gas", Icons.Default.Search),
+        BottomNavItem("alerts", "Alerts", Icons.Default.Notifications)
+    )
 
-@Composable
-fun SearchScreen(viewModel: GasPriceViewModel) {
-    Scaffold { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding)) {
-            StationListScreen(viewModel = viewModel)
+    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+
+    NavigationBar {
+        items.forEach { item ->
+            NavigationBarItem(
+                selected = currentRoute == item.route,
+                onClick = {
+                    navController.navigate(item.route) {
+                        popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                },
+                icon = { Icon(item.icon, contentDescription = item.label) },
+                label = { Text(item.label) }
+            )
         }
     }
 }
 
+data class BottomNavItem(val route: String, val label: String, val icon: ImageVector)
