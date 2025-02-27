@@ -37,7 +37,6 @@ import com.gpn.viewmodel.PriceAlertsViewModel
 
 @Composable
 fun PriceAlertsScreen(viewModel: PriceAlertsViewModel) {
-
     var showDeleteAllDialog by remember { mutableStateOf(false) }
     val alerts by viewModel.alerts.collectAsState()
 
@@ -61,7 +60,7 @@ fun PriceAlertsScreen(viewModel: PriceAlertsViewModel) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Info,  // You can change this icon
+                        imageVector = Icons.Default.Info,
                         contentDescription = "No Alerts",
                         modifier = Modifier.size(64.dp),
                         tint = MaterialTheme.colorScheme.primary
@@ -84,23 +83,28 @@ fun PriceAlertsScreen(viewModel: PriceAlertsViewModel) {
                     )
                 }
             } else {
-                LazyColumn( modifier = Modifier.weight(1f),
-                     verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
                     items(alerts) { alert ->
                         AlertItem(viewModel, alert)
                     }
-                }
 
-                if (alerts.isNotEmpty()) {
-                    Spacer(modifier = Modifier.height(16.dp))
+                    // ✅ Make the "Delete All Alerts" button scrollable
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                    // 🚨 Delete All Alerts Button
-                    Button(
-                        onClick = { showDeleteAllDialog = true },
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Delete All Alerts")
+                        Button(
+                            onClick = { showDeleteAllDialog = true },
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+                            modifier = Modifier
+                                .fillMaxWidth() // Full width
+                                .padding(horizontal = 32.dp) // Add horizontal padding
+                                .height(48.dp)
+                        ) {
+                            Text("Delete All Alerts")
+                        }
                     }
                 }
             }
@@ -132,6 +136,7 @@ fun PriceAlertsScreen(viewModel: PriceAlertsViewModel) {
         )
     }
 }
+
 
 
 
