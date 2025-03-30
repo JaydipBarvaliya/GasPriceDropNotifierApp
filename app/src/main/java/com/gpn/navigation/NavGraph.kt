@@ -1,5 +1,6 @@
 package com.gpn.navigation
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
@@ -18,6 +19,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.auth.FirebaseAuth
+import com.gpn.MainActivity
+import com.gpn.ui.LoginScreen
 import com.gpn.ui.PriceAlertsScreen
 import com.gpn.ui.StationListScreen
 import com.gpn.viewmodel.GasPriceViewModel
@@ -25,21 +29,30 @@ import com.gpn.viewmodel.PriceAlertsViewModel
 
 @Composable
 fun NavGraph(gasPriceViewModel: GasPriceViewModel, alertsModel: PriceAlertsViewModel) {
+
     val navController = rememberNavController()
+    val currentUser = FirebaseAuth.getInstance().currentUser
 
     Scaffold(
-        bottomBar = { BottomNavBar(navController) } // 🚀 Added BottomNavBar here!
+        bottomBar = {
+            if (currentUser != null) BottomNavBar(navController) } // Hide navbar on LoginScreen
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = "search",
+            startDestination = if (currentUser == null) "login" else "search",
             modifier = Modifier.padding(innerPadding)
         ) {
+            composable("login") { LoginScreen(onGoogleSignIn = { signInWithGoogle(navController) }) }
             composable("search") { StationListScreen(viewModel = gasPriceViewModel) } // ✅ Updated Navigation
             composable("alerts") { PriceAlertsScreen(alertsModel) }
         }
     }
 }
+fun signInWithGoogle(navController: NavController) {
+    val activity = navController.context as? ComponentActivity ?: return
+    (activity as? MainActivity)?.signInWithGoogle()
+}
+
 
 @Composable
 fun BottomNavBar(navController: NavController) {

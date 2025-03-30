@@ -16,7 +16,7 @@ data class Address(
     val locality: String,
     val region: String,
     val postalCode: String,
-    var country: String = ""  // Default empty, to be set manually
+    var countryCode: String = ""  // Default empty, to be set manually
 )
 
 @JsonClass(generateAdapter = true)

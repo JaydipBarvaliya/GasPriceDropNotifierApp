@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.dagger.hilt.android")
     id("kotlin-kapt")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -48,6 +49,11 @@ android {
 
 dependencies {
 
+    implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
+    implementation ("com.google.android.gms:play-services-auth:20.7.0")
+
+    implementation ("com.google.firebase:firebase-messaging:24.1.0")
+
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation ("com.google.android.material:material:1.9.0")
@@ -56,6 +62,9 @@ dependencies {
 
     implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation ("com.google.dagger:hilt-android:2.50")
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation(libs.volley)
+    implementation(libs.espresso.core)
     kapt ("com.google.dagger:hilt-android-compiler:2.50")
     implementation("androidx.navigation:navigation-compose:2.7.6")
 
@@ -93,11 +102,4 @@ dependencies {
     // ✅ Coroutines (Updated)
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
 
-    // ✅ Testing
-    testImplementation("junit:junit:4.14.0")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2024.03.00"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
 }

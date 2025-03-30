@@ -37,7 +37,11 @@ data class PriceAlertRequest(
     val locality : String,
     val postalCode : String,
     val region: String,
-    val name: String
+    val countryCode: String,
+    val gasStationBrand: String,
+    val userId: String,
+    val userEmail: String,
+    val pushNotification: Boolean,
 )
 
 data class PriceAlertResponse(
@@ -56,10 +60,11 @@ data class Alert(
     val locality: String?,
     val postalCode: String?,
     val region: String?,
-    val name: String?
+    val countryCode: String?,
+    val gasStationBrand: String?
 ){
     fun formattedAddress(): String {
-        return listOfNotNull(line1, locality, region, postalCode).joinToString(", ")
+        return listOfNotNull(line1, locality, region, countryCode).joinToString(", ")
     }
 }
 

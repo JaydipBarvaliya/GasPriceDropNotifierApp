@@ -30,6 +30,15 @@ fun ModifyAlertDialog(
 ) {
     var expectedPrice by remember { mutableStateOf(alert.expectedPrice.toString()) }
     val fuelTypes = listOf("Regular", "Midgrade", "Premium", "Diesel", "E85", "UNL88")
+
+    val fuelTypeMap = mapOf(
+        "Regular" to 1, "Midgrade" to 2, "Premium" to 3, "Diesel" to 4, "E85" to 5, "UNL88" to 12
+    )
+
+    fun getFuelTypeId(fuelTypeName: String): Int {
+        return fuelTypeMap[fuelTypeName] ?: 1
+    }
+
     var fuelTypeIndex by remember { mutableIntStateOf(alert.fuelType) }
     var expanded by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) } // Track delete confirmation
@@ -51,7 +60,7 @@ fun ModifyAlertDialog(
                     onExpandedChange = { expanded = it }
                 ) {
                     OutlinedTextField(
-                        value = fuelTypes[fuelTypeIndex], // Display selected fuel type
+                        value = fuelTypesMap[fuelTypeIndex], // Display selected fuel type
                         onValueChange = {},
                         shape = MaterialTheme.shapes.large,
                         readOnly = true, // Prevent manual text input
@@ -89,10 +98,6 @@ fun ModifyAlertDialog(
                     )
                 }) {
                     Text("Update Alert")
-                }
-
-                Button(onClick = { showDeleteDialog = true }) {
-                    Text("Delete Alert")
                 }
             }
         },

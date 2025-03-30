@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.gpn.network.GasPriceApi
 import com.gpn.network.PriceAlertRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -79,10 +80,11 @@ class GasPriceViewModel @Inject constructor(private val gasPriceApi: GasPriceApi
                 val response = gasPriceApi.findByCityOrZipcode(search, fuel, maxAge, brandId)
 
                 val stations = response.data?.locationBySearchTerm?.stations?.results.orEmpty()
+
                 val countryCode = response.data?.locationBySearchTerm?.countryCode ?: "Unknown"
 
                 val updatedStations = stations.map { station ->
-                    station.copy(address = station.address.copy(country = countryCode))
+                    station.copy(address = station.address.copy(countryCode = countryCode))
                 }
 
                 withContext(Dispatchers.Main) {
@@ -105,7 +107,7 @@ class GasPriceViewModel @Inject constructor(private val gasPriceApi: GasPriceApi
 
     var isDialogOpen = mutableStateOf(false)
     var selectedFuelType = mutableStateOf("Regular")
-    var expectedPrice = mutableFloatStateOf(0.0f)
+    var expectedPrice = mutableFloatStateOf(100f)
 
     fun showCreateAlertDialog(station: GasStation) {
         _selectedStation.value = station
@@ -132,17 +134,29 @@ class GasPriceViewModel @Inject constructor(private val gasPriceApi: GasPriceApi
 
         viewModelScope.launch {
             try {
-                val response = gasPriceApi.createPriceAlert(
-                    PriceAlertRequest(
-                        station.id, getFuelTypeId(fuelType), price,
-                        station.address.line1,
-                        station.address.locality,
-                        station.address.postalCode,
-                        station.address.region,
-                        station.name
+                val userId = FirebaseAuth.getInstance().currentUser?.uid
+                val userEmail = FirebaseAuth.getInstance().currentUser?.email
+                if (userId != null && userEmail != null) {
+                    val response = gasPriceApi.createPriceAlert(
+                        PriceAlertRequest(
+                            station.id,
+                            getFuelTypeId(fuelType),
+                            price,
+                            station.address.line1,
+                            station.address.locality,
+                            station.address.postalCode,
+                            station.address.region,
+                            station.address.countryCode,
+                            station.name,
+                            userId,
+                            userEmail,
+                            true  //By default push notification is enabled
+                        )
                     )
-                )
-            println("✅ API Response: $response")
+                    println("✅ API Response: $response")
+                }else{
+                    println("🚨 Error: User not authenticated")
+                }
             }catch (e: Exception){
                 println("🚨 API Error: ${e.message}")
             }

@@ -150,7 +150,7 @@ fun AlertItem(viewModel: PriceAlertsViewModel, alert: Alert) {
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = alert.name ?: "...", style = MaterialTheme.typography.titleLarge)
+            Text(text = alert.gasStationBrand ?: "...", style = MaterialTheme.typography.titleLarge)
             Text(text = alert.formattedAddress().ifEmpty { "..." }, style = MaterialTheme.typography.bodyMedium)
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -161,7 +161,7 @@ fun AlertItem(viewModel: PriceAlertsViewModel, alert: Alert) {
             )
 
             Text(
-                text = "Fuel Type: ${alert.fuelType}",
+                text = "Fuel Type: ${reversedFuelTypeMap[alert.fuelType] ?: "Unknown Fuel"}",
                 style = MaterialTheme.typography.bodyMedium
             )
 
@@ -223,5 +223,14 @@ fun AlertItem(viewModel: PriceAlertsViewModel, alert: Alert) {
         )
     }
 }
+
+val reversedFuelTypeMap = mapOf(
+    1 to "Regular",
+    2 to "Midgrade",
+    3 to "Premium",
+    4 to "Diesel",
+    5 to "E85",
+    12 to "UNL88"
+)
 
 

@@ -158,7 +158,7 @@ fun GasStationCard(station: GasStation, viewModel: GasPriceViewModel) {
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = station.address.line1,
+                text = station.address.line1 + ", " + station.address.locality + ", " + station.address.region + ", " + station.address.countryCode,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -169,6 +169,7 @@ fun GasStationCard(station: GasStation, viewModel: GasPriceViewModel) {
                 "Midgrade" to station.prices.getOrNull(1)?.credit?.formattedPrice,
                 "Premium" to station.prices.getOrNull(2)?.credit?.formattedPrice,
                 "Diesel" to station.prices.getOrNull(3)?.credit?.formattedPrice
+                //TODO : make sure also show the rest of the gas types such as E85 and UNL88, and before that understand which index is giving the value of E85 and UNL88.
             )
 
             Column {

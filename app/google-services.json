@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "67551198635",
+    "project_id": "gpn-52a8131f",
+    "storage_bucket": "gpn-52a8131f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:67551198635:android:0e15d34f27183593ee26ee",
+        "android_client_info": {
+          "package_name": "com.gpn"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "67551198635-nu18aqihfm6aquthanmhoujpjv9gqioh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gpn",
+            "certificate_hash": "ae7ca54aadceede421cc0c2ca5da873df572dc78"
+          }
+        },
+        {
+          "client_id": "67551198635-dtqi2tt8o0s0u51m2n6c80e8u9919hsv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADJMD36Hc2MJ79Y-Ge4CPd7Pv4qSepIaQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "67551198635-dtqi2tt8o0s0u51m2n6c80e8u9919hsv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

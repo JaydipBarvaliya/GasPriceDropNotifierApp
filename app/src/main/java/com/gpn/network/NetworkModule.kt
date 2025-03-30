@@ -14,7 +14,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class) // ✅ Ensures a single instance of Retrofit is available across the app
 object NetworkModule {
 
-    private const val BASE_URL = "http://192.168.5.21:8080/"
+    private const val BASE_URL = "http://10.0.0.39:8080/"
 
     @Provides
     @Singleton
