@@ -32,6 +32,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.gpn.constants.FuelTypeMap
+import com.gpn.constants.ReverseFuelTypeMap
 import com.gpn.network.Alert
 import com.gpn.viewmodel.PriceAlertsViewModel
 
@@ -186,6 +188,7 @@ fun AlertItem(viewModel: PriceAlertsViewModel, alert: Alert) {
     if (showModifyDialog) {
         ModifyAlertDialog(
             alert = alert,
+            fuelTypesMap = ReverseFuelTypeMap,
             onDismiss = { showModifyDialog = false },
             onUpdate = { updatedAlert ->
                 viewModel.updateAlert(updatedAlert)
